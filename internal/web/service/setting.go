@@ -36,6 +36,7 @@ var xrayTemplateConfig string
 
 const (
 	DefaultSubClashUserAgentRegex     = `(?i)(clash|mihomo)`
+	DefaultExternalSubUserAgent       = "v2rayNG/1.8.5"
 	DefaultSubJsonUserAgentRegex      = ``
 	DefaultRemarkTemplate             = "{{INBOUND}}-{{EMAIL}}|📊{{TRAFFIC_LEFT}}|⏳{{DAYS_LEFT}}D"
 	DefaultSubExpiredTemplate         = "⛔ {{EMAIL}} | Expired: {{EXPIRE_DATE}}"
@@ -146,6 +147,7 @@ var defaultValueMap = map[string]string{
 	"subDomain":                   "",
 	"subCertFile":                 "",
 	"subKeyFile":                  "",
+	"externalSubUserAgent":        DefaultExternalSubUserAgent,
 	"subUpdates":                  "12",
 	"subEncrypt":                  "true",
 	"subURI":                      "",
@@ -1050,6 +1052,17 @@ func (s *SettingService) GetSubKeyFile() (string, error) {
 
 func (s *SettingService) GetSubUpdates() (string, error) {
 	return s.getString("subUpdates")
+}
+
+func (s *SettingService) GetExternalSubUserAgent() (string, error) {
+	value, err := s.getString("externalSubUserAgent")
+	if err != nil {
+		return DefaultExternalSubUserAgent, err
+	}
+	if value = strings.TrimSpace(value); value == "" {
+		return DefaultExternalSubUserAgent, nil
+	}
+	return value, nil
 }
 
 func (s *SettingService) GetSubEncrypt() (bool, error) {

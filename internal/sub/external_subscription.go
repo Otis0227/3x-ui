@@ -148,7 +148,7 @@ func doFetchSubscriptionLinks(rawURL string) ([]string, error) {
 		return nil, err
 	}
 	// Some providers gate the link body on a known client User-Agent.
-	req.Header.Set("User-Agent", "v2rayNG/1.8.5")
+	req.Header.Set("User-Agent", externalSubUserAgent())
 	// A 3x-ui donor with an HWID limit answers 404 when the header is empty (#6559).
 	if hwid := service.ExternalSubscriptionHwid(); hwid != "" {
 		req.Header.Set("X-HWID", hwid)
@@ -175,6 +175,19 @@ var (
 	errBadStatus                = &subError{"non-2xx subscription response"}
 	errSubscriptionBodyTooLarge = &subError{"subscription response body exceeds size limit"}
 )
+
+// externalSubUserAgent returns the panel setting for external subscription
+// fetches, or the historical client UA when it is unset or the DB is unreachable.
+func externalSubUserAgent() string {
+	if database.GetDB() == nil {
+		return service.DefaultExternalSubUserAgent
+	}
+	ua, err := (&service.SettingService{}).GetExternalSubUserAgent()
+	if err != nil {
+		return service.DefaultExternalSubUserAgent
+	}
+	return ua
+}
 
 type subError struct{ msg string }
 
