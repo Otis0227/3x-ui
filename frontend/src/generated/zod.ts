@@ -12,6 +12,9 @@ export type ProcessState = z.infer<typeof ProcessStateSchema>;
 export const ProtocolSchema = z.string();
 export type Protocol = z.infer<typeof ProtocolSchema>;
 
+export const addrFamilySchema = z.number().int();
+export type addrFamily = z.infer<typeof addrFamilySchema>;
+
 export const staticEgressResolverSchema = z.string();
 export type staticEgressResolver = z.infer<typeof staticEgressResolverSchema>;
 
